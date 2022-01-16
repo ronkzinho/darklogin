@@ -27,9 +27,11 @@ export const createUser = async (data: any) => {
   const rep = new Repository(userSchema, client);
   const user = rep.createEntity(data);
 
+  const id = await rep.save(user);
+
   await client.close();
 
-  return await rep.save(user);
+  return id;
 };
 
 export const getUser = async (id: string) => {
