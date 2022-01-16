@@ -1,0 +1,9 @@
+.container {
+  display: flex;
+  flex-direction: row;
+}
+
+.container > button {
+  background-color: green;
+  margin: 0.3vw;
+}
