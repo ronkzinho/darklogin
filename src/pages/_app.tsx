@@ -1,6 +1,5 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
-import { getAccessToken, getMe, getNewAccessToken } from "../auth";
+import { getMe } from "../auth";
 import { SafeUser } from "../entities/user";
 import "../styles/globals.css";
 import { userContext } from "../userContext";

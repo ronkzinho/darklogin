@@ -1,59 +1,70 @@
 import axios from "axios";
+import { Form, Formik } from "formik";
 import { useRouter } from "next/router";
-import { useState } from "react";
 import { setAccessToken } from "../auth";
+import { InputField } from "../components/InputField";
+import { mapFormErrors } from "../util/mapFormErrors";
 
 export default function Register() {
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const router = useRouter();
 
-  const submit = async (e) => {
-    e.preventDefault();
-
-    const req = await axios.post(
-      "/api/register",
-      { email, password, username },
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    setAccessToken((await req.data)["accessToken"]);
-
-    router.push("/dashboard");
-  };
   return (
-    <form onSubmit={submit}>
-      <button
-        type="button"
-        className="backButton"
-        onClick={() => router.back()}
-      >
-        {"<"}
-      </button>
-      <input
-        placeholder="username"
-        type="text"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-      ></input>
-      <input
-        placeholder="email"
-        type="email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      ></input>
-      <input
-        placeholder="password"
-        type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      ></input>
-      <button type="submit">Register</button>
-    </form>
+    <Formik
+      initialValues={{ username: "", email: "", password: "" }}
+      onSubmit={async (values, { setErrors }) => {
+        const data = await (
+          await axios.post("/api/register", values, {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          })
+        ).data;
+
+        if (data.errors.length > 0) {
+          const errors = mapFormErrors(data.errors);
+          setErrors(errors);
+          return;
+        }
+
+        setAccessToken(data["accessToken"]);
+
+        router.push("/dashboard");
+      }}
+    >
+      {({ isSubmitting, isValid }) => (
+        <>
+          <button
+            type="button"
+            className="backButton"
+            onClick={() => router.back()}
+          >
+            {"<"}
+          </button>
+          <Form>
+            <InputField
+              label="Username"
+              name="username"
+              placeholder="insert text here"
+              type="text"
+            ></InputField>
+            <InputField
+              label="Email"
+              name="email"
+              placeholder="insert text here"
+              type="email"
+            ></InputField>
+            <InputField
+              label="Password"
+              name="password"
+              placeholder="insert text here"
+              type="password"
+            ></InputField>
+            <button disabled={!isValid} type="submit">
+              {isSubmitting ? <div className="loader"></div> : "Register"}
+            </button>
+          </Form>
+        </>
+      )}
+    </Formik>
   );
 }

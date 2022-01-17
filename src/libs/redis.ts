@@ -1,6 +1,4 @@
-import { compareSync } from "bcrypt";
-import { NextApiRequest } from "next";
-import { Client, HashData, Repository, Schema } from "redis-om";
+import { Client, Repository, Schema } from "redis-om";
 import { User } from "../entities/user";
 
 const client = new Client();
@@ -17,6 +15,7 @@ const userSchema = new Schema(
     email: { type: "string" },
     password: { type: "string" },
     username: { type: "string" },
+    nickname: { type: "string" },
   },
   { dataStructure: "JSON" }
 );
@@ -25,7 +24,7 @@ export const createUser = async (data: any) => {
   await connect();
 
   const rep = new Repository(userSchema, client);
-  const user = rep.createEntity(data);
+  const user = rep.createEntity({ ...data, nickname: data.username });
 
   const id = await rep.save(user);
 
@@ -44,21 +43,30 @@ export const getUser = async (id: string) => {
   return user;
 };
 
-export const getUserLogin = async (req: NextApiRequest) => {
+export const getUserWithEmailOrUsername = async (emailOrUsername: string) => {
   await connect();
 
   const rep = new Repository(userSchema, client);
   const user = await rep
     .search()
-    .where("email")
-    .equals(req.body.email)
+    .where(emailOrUsername.includes("@") ? "email" : "username")
+    .equals(emailOrUsername)
     .return.returnFirst();
-
-  if (!compareSync(req.body.password, user.password)) {
-    return null;
-  }
 
   await client.close();
 
   return user;
+};
+export const changeUserNickname = async (
+  userId: string,
+  newNickname: string
+) => {
+  await connect();
+
+  const rep = new Repository(userSchema, client);
+  const user = await rep.fetch(userId);
+
+  user.nickname = newNickname;
+
+  return await rep.save(user);
 };

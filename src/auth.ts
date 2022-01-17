@@ -1,4 +1,5 @@
 import axios from "axios";
+import { api } from "./libs/api";
 
 let accessToken: string = null;
 
@@ -23,14 +24,7 @@ export const getNewRefreshToken = async () => {
 
 export const getMe = async () => {
   try {
-    const { data } = await axios.get("/api/me", {
-      method: "GET",
-      headers: {
-        Authorization:
-          "Bearer " + (getAccessToken() || (await getNewAccessToken())),
-        "Content-Type": "json",
-      },
-    });
+    const { data } = await api.get("/me");
     return await data;
   } catch {
     return null;

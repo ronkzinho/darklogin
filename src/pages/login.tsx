@@ -1,52 +1,64 @@
 import axios from "axios";
+import { Form, Formik } from "formik";
 import { useRouter } from "next/router";
-import { useState } from "react";
 import { setAccessToken } from "../auth";
+import { InputField } from "../components/InputField";
+import { mapFormErrors } from "../util/mapFormErrors";
 
 export default function Register() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const router = useRouter();
 
-  const submit = async (e) => {
-    e.preventDefault();
-
-    const res = await axios.post(
-      "/api/login",
-      { email, password },
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    setAccessToken((await res.data)["accessToken"]);
-
-    router.push("/dashboard");
-  };
   return (
-    <form onSubmit={submit}>
-      <button
-        type="button"
-        className="backButton"
-        onClick={() => router.back()}
-      >
-        {"<"}
-      </button>
-      <input
-        placeholder="email"
-        type="email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      ></input>
-      <input
-        placeholder="password"
-        type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      ></input>
-      <button type="submit">Login</button>
-    </form>
+    <Formik
+      initialValues={{ emailOrUsername: "", password: "" }}
+      onSubmit={async (values, { setErrors }) => {
+        const data = await (
+          await axios.post("/api/login", values, {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          })
+        ).data;
+
+        if (data.errors.length > 0) {
+          const errors = mapFormErrors(data.errors);
+          setErrors(errors);
+          return;
+        }
+
+        setAccessToken(data["accessToken"]);
+
+        router.push("/dashboard");
+      }}
+    >
+      {({ isSubmitting, isValid }) => (
+        <>
+          <button
+            type="button"
+            className="backButton"
+            onClick={() => router.back()}
+          >
+            {"<"}
+          </button>
+          <Form>
+            <InputField
+              label="Email or username"
+              name="emailOrUsername"
+              placeholder="insert text here"
+              type="emailOrUsername"
+            ></InputField>
+            <InputField
+              label="Password"
+              name="password"
+              placeholder="insert text here"
+              type="password"
+            ></InputField>
+            <button disabled={!isValid} type="submit">
+              {isSubmitting ? <div className="loader"></div> : "Login"}
+            </button>
+          </Form>
+        </>
+      )}
+    </Formik>
   );
 }

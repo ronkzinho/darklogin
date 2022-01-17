@@ -1,6 +1,5 @@
 import { sign, verify } from "jsonwebtoken";
 import { NextApiRequest } from "next";
-import { getSafeUser, SafeUser as SafeUser, User } from "../entities/user";
 import { getUser } from "../libs/redis";
 
 export const createAccessToken = (id: string) => {
@@ -15,7 +14,7 @@ export const createRefreshToken = (accessToken: string) => {
   });
 };
 
-export const getUserWithAcesstoken = async (req: NextApiRequest) => {
+export const getUserWithAccesstoken = async (req: NextApiRequest) => {
   try {
     const authorization = req.headers["authorization"];
 

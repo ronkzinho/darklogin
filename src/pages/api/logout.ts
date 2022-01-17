@@ -1,4 +1,3 @@
-import { serialize } from "cookie";
 import { NextApiRequest, NextApiResponse } from "next";
 import { sendRefreshToken } from "../../api/sendRefreshToken";
 

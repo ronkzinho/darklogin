@@ -1,6 +1,9 @@
 import { Entity } from "redis-om";
 
-export type SafeUser = Pick<User, keyof { email: string; username: string }>;
+export type SafeUser = Pick<
+  User,
+  keyof { email: string; username: string; nickname: string }
+>;
 export const getSafeUser = (user: any) => {
   const safeUser: any = { ...user.entityData };
 
@@ -13,4 +16,5 @@ export class User extends Entity {
   username: string;
   email: string;
   password: string;
+  nickname: string;
 }

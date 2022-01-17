@@ -27,9 +27,9 @@ form {
   justify-content: center;
 }
 input {
-  background: rgb(12, 12, 12);
+  background: none;
   border-radius: 1px;
-  color: white;
+  color: rgb(167, 167, 167);
   outline: none;
   width: 40vw;
   height: 3vw;
@@ -37,7 +37,6 @@ input {
   margin-bottom: 20px;
   border: 0;
   border-bottom: 2px solid rgb(44, 44, 44);
-  padding-left: 1vw;
 }
 
 button {
@@ -52,6 +51,7 @@ button {
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  margin-top: 1vw;
 }
 
 .backButton {
@@ -64,14 +64,84 @@ button {
   background-color: rgb(44, 44, 44);
   width: 4vw;
   height: 4vw;
+  text-align: center;
 }
 
 ::placeholder {
-  color: rgb(172, 172, 172);
+  color: rgb(102, 102, 102);
+}
+.inputError {
+  color: red;
+  margin-top: -10px;
+  margin-bottom: 20px;
+}
+.inputLabel {
+  margin: 1vw;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.loader {
+  position: fixed;
+  border: 0.4vw solid #c4c4c4;
+  border-top: 0.4vw solid #082b42;
+  border-radius: 50%;
+  width: 3vw;
+  height: 3vw;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .home > h1 {
   text-decoration: none;
   color: white;
   cursor: pointer;
+}
+
+h1 {
+  margin-bottom: 1vw;
+}
+
+.changeNickname {
+  resize: none;
+  color: white;
+  background: none;
+  border: none;
+  outline: none;
+  font-size: 4vw;
+  height: 6vw;
+  max-height: 6vw;
+  width: 20vw;
+  overflow: hidden;
+  text-justify: center;
+  margin: 0;
+}
+
+.changeNicknameForm {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin-top: -3.5vw;
+}
+
+.loggedAs {
+  position: absolute;
+  right: 0;
+  top: -2vw;
+  bottom: 0;
+  left: 100;
+}
+
+.newNicknameError {
+  margin: 0;
+  color: red;
 }

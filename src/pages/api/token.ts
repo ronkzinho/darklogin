@@ -10,12 +10,10 @@ export default async function handler(
   res: NextApiResponse
 ) {
   if (req.method === "POST") {
-    const id = await createUser(req.body.userId);
-
-    const accessToken = createAccessToken(id);
-    sendRefreshToken(res, createRefreshToken(accessToken));
-
-    res.status(200).json({ accessToken });
+    // const id = await createUser(req.body.userId);
+    // const accessToken = createAccessToken(id);
+    // sendRefreshToken(res, createRefreshToken(accessToken));
+    // res.status(200).json({ accessToken });
   }
   if (req.method === "GET") {
     const token = req.cookies["qwdq"];
