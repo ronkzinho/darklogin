@@ -13,9 +13,11 @@ export const getAccessToken = () => {
 };
 
 export const getNewAccessToken = async () => {
-  const data = await (await axios.get("/api/token")).data;
+  const { data } = await axios.get("/api/token");
 
-  return data["accessToken"];
+  setAccessToken(await data["accessToken"]);
+
+  return await data["accessToken"];
 };
 
 export const getNewRefreshToken = async () => {
@@ -24,7 +26,12 @@ export const getNewRefreshToken = async () => {
 
 export const getMe = async () => {
   try {
-    const { data } = await api.get("/me");
+    let { data } = await api.get("/me");
+
+    if (data === null) {
+      setAccessToken(null);
+      data = (await api.get("/me")).data;
+    }
     return await data;
   } catch {
     return null;

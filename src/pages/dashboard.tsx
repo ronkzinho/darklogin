@@ -1,17 +1,16 @@
 import { useRouter } from "next/router";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import AutosizeInput from "react-input-autosize";
 import { getAccessToken, getMe, setAccessToken } from "../auth";
 import { api } from "../libs/api";
-import styles from "../styles/Dashboard.module.css";
 import { userContext } from "../userContext";
-import { fieldError } from "../util/fieldError";
 
 export default function Dashboard() {
   const { user, setUser } = useContext(userContext);
   const [nicknameEditable, setNicknameEditable] = useState<boolean>(false);
   const [newNickname, setNewNickname] = useState<string>("");
   const [error, setError] = useState<string>(null);
+  const [key, setKey] = useState(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -34,6 +33,16 @@ export default function Dashboard() {
   };
 
   useEffect(() => {
+    window.addEventListener("resize", setCorrectInputWidth);
+
+    return () => window.removeEventListener("resize", setCorrectInputWidth);
+  }, []);
+
+  const setCorrectInputWidth = () => {
+    setKey((prevState) => prevState + 1);
+  };
+
+  useEffect(() => {
     if (user === null && !getAccessToken()) {
       router.push("/home");
     } else if (getAccessToken()) {
@@ -43,7 +52,11 @@ export default function Dashboard() {
           setUser(me);
         }
       })();
-    } else if (user) {
+    }
+  }, []);
+
+  useEffect(() => {
+    if (user && !newNickname) {
       setNewNickname(user.nickname);
     }
   }, [user]);
@@ -70,14 +83,13 @@ export default function Dashboard() {
       setError(data.errors[0].message);
       return;
     }
-    user.nickname = newNickname;
-    setNewNickname(newNickname);
+    user.nickname = data.newNickname;
+    setNewNickname(data.newNickname);
     setNicknameEditable(false);
   };
 
   return (
-    <div className={styles.container}>
-      {error && <p className="newNicknameError">{error + "\n"}</p>}
+    <div className="dashboardContainer">
       <div
         style={{
           display: "flex",
@@ -89,58 +101,68 @@ export default function Dashboard() {
       >
         <form className="changeNicknameForm" onSubmit={handleNicknameChange}>
           <h1>
-            Hello{" "}
-            {nicknameEditable ? (
-              <AutosizeInput
-                autoFocus
-                value={newNickname}
-                onChange={(e) => setNewNickname(e.target.value)}
-                inputClassName="changeNickname"
-              ></AutosizeInput>
-            ) : (
-              <span>{user?.nickname}</span>
-            )}
-          </h1>
-          <input
-            type="image"
-            src={
-              nicknameEditable
-                ? "/check-mark.png"
-                : "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Ei-pencil.svg/128px-Ei-pencil.svg.png"
-            }
-            alt="pencil"
-            style={{
-              filter: "invert(.6)",
-              width: "2vw",
-              height: "2vw",
-              margin: "1vw",
-              marginTop: "2.4vw",
-              cursor: "pointer",
-              border: "none",
-            }}
-            {...(nicknameEditable ? { name: "submit" } : {})}
-          />
-          {nicknameEditable && (
-            <img
-              src="/x-mark.png"
-              alt="close"
+            Hello
+            <div
               style={{
-                filter: "invert(.4)",
-                width: "2vw",
-                height: "2vw",
-                margin: "1vw",
-                marginTop: "2.4vw",
-                cursor: "pointer",
+                display: "flex",
+                flexDirection: "row",
+                flex: "1",
+                justifyContent: "center",
+                alignItems: "center",
               }}
-              onClick={handleCloseEditNickname}
-            />
-          )}
+            >
+              <div>
+                {nicknameEditable ? (
+                  <AutosizeInput
+                    autoFocus
+                    value={newNickname}
+                    onChange={(e) => setNewNickname(e.target.value)}
+                    inputClassName="changeNickname"
+                    maxLength={15}
+                    key={key}
+                  ></AutosizeInput>
+                ) : (
+                  <span>{user?.nickname}</span>
+                )}
+              </div>
+              <input
+                type="image"
+                src={
+                  nicknameEditable
+                    ? "/check-mark.png"
+                    : "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Ei-pencil.svg/128px-Ei-pencil.svg.png"
+                }
+                alt="pencil"
+                style={{
+                  filter: "invert(.6)",
+                  width: nicknameEditable ? "2.5vw" : "4vw",
+                  cursor: "pointer",
+                  border: "none",
+                }}
+                {...(nicknameEditable ? { name: "submit" } : {})}
+              />
+              {nicknameEditable && (
+                <img
+                  src="/x-mark.png"
+                  alt="close"
+                  style={{
+                    filter: "invert(.4)",
+                    width: "2vw",
+                    cursor: "pointer",
+                    marginLeft: "1vw",
+                    border: "none",
+                  }}
+                  onClick={handleCloseEditNickname}
+                />
+              )}
+            </div>
+          </h1>
         </form>
       </div>
       <div className="loggedAs">
         <p>logged as {user.username}</p>
       </div>
-      <button style={{ marginTop: "-.5vw" }} onClick={logout}>
+      <button style={{ marginTop: ".5vw" }} onClick={logout}>
         Logout
       </button>
     </div>

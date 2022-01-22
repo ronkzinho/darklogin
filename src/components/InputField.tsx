@@ -9,12 +9,19 @@ type InputFieldProps = InputHTMLAttributes<HTMLInputElement> & {
 export const InputField: React.FC<InputFieldProps> = ({ label, ...props }) => {
   const [field, { error }] = useField(props);
   return (
-    <div style={{ display: "flex", justifyContent: "center" }}>
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        flexDirection: "column",
+      }}
+    >
       <p className="inputLabel">{label}</p>
       <input
         {...field}
         {...props}
         style={error ? { borderBottom: "red solid 2px" } : {}}
+        className="inputField"
       ></input>
       {error && <p className="inputError">{error}</p>}
     </div>

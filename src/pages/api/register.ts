@@ -52,7 +52,7 @@ export default async function handler(
     password: hashSync(password, await genSalt()),
   });
   const accessToken = createAccessToken(id);
-  const refreshToken = createRefreshToken(accessToken);
+  const refreshToken = createRefreshToken(id);
   sendRefreshToken(res, refreshToken);
 
   res.status(200).json({ accessToken, errors });

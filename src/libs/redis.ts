@@ -40,7 +40,7 @@ export const getUser = async (id: string) => {
   const user = rep.fetch(id);
 
   await client.close();
-  return user;
+  return await user;
 };
 
 export const getUserWithEmailOrUsername = async (emailOrUsername: string) => {

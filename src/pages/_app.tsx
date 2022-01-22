@@ -10,13 +10,16 @@ function MyApp({ Component, pageProps }) {
   useEffect(() => {
     if (!user) {
       (async () => {
-        setUser(await getMe());
+        const me = await getMe();
+        setUser(me);
       })();
     }
   }, []);
   return (
     <userContext.Provider value={{ user, setUser }}>
-      <Component {...pageProps} />
+      <div className="container">
+        <Component {...pageProps} />
+      </div>
     </userContext.Provider>
   );
 }

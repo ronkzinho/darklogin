@@ -40,7 +40,7 @@ export default function Register() {
           >
             {"<"}
           </button>
-          <Form>
+          <Form className="registerContainer">
             <InputField
               label="Username"
               name="username"

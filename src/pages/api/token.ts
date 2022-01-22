@@ -18,10 +18,10 @@ export default async function handler(
   if (req.method === "GET") {
     const token = req.cookies["qwdq"];
     if (!token) return res.status(200).json(null);
-    const { accessToken } = verify(token, process.env.REFRESH_TOKEN_SECRET);
+    const { userId } = verify(token, process.env.REFRESH_TOKEN_SECRET);
 
-    sendRefreshToken(res, createRefreshToken(accessToken));
+    sendRefreshToken(res, createRefreshToken(userId));
 
-    res.status(200).json({ accessToken });
+    res.status(200).json({ accessToken: createAccessToken(userId) });
   }
 }

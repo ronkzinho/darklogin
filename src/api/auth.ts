@@ -2,14 +2,14 @@ import { sign, verify } from "jsonwebtoken";
 import { NextApiRequest } from "next";
 import { getUser } from "../libs/redis";
 
-export const createAccessToken = (id: string) => {
-  return sign({ id }, process.env.ACCESS_TOKEN_SECRET!, {
+export const createAccessToken = (userId: string) => {
+  return sign({ userId }, process.env.ACCESS_TOKEN_SECRET!, {
     expiresIn: "15m",
   });
 };
 
-export const createRefreshToken = (accessToken: string) => {
-  return sign({ accessToken }, process.env.REFRESH_TOKEN_SECRET!, {
+export const createRefreshToken = (userId: string) => {
+  return sign({ userId }, process.env.REFRESH_TOKEN_SECRET!, {
     expiresIn: "7d",
   });
 };
@@ -20,11 +20,12 @@ export const getUserWithAccesstoken = async (req: NextApiRequest) => {
 
     if (!authorization) return null;
     const rawUser = await getUser(
-      verify(authorization.split(" ")[1], process.env.ACCESS_TOKEN_SECRET).id
+      verify(authorization.split(" ")[1], process.env.ACCESS_TOKEN_SECRET)
+        .userId
     );
 
     return rawUser;
-  } catch {
+  } catch (e) {
     return null;
   }
 };

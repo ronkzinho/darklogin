@@ -20,7 +20,7 @@ export default function App() {
   }
 
   return (
-    <div className={styles.container}>
+    <div className={styles.homeContainer}>
       <Link href={"/register"}>
         <button>register</button>
       </Link>

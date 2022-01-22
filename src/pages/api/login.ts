@@ -41,7 +41,7 @@ export default async function handler(
   }
 
   const accessToken = createAccessToken(user.entityId);
-  const refreshToken = createRefreshToken(accessToken);
+  const refreshToken = createRefreshToken(user.entityId);
   sendRefreshToken(res, refreshToken);
 
   return res.status(200).json({ accessToken, errors });
