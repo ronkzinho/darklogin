@@ -106,23 +106,33 @@ export default function Dashboard() {
               style={{
                 display: "flex",
                 flexDirection: "row",
-                flex: "1",
                 justifyContent: "center",
                 alignItems: "center",
+                maxWidth: "100vw",
+                width: "100%",
               }}
             >
-              <div>
+              <div style={{ maxWidth: nicknameEditable ? "78%" : "90%" }}>
                 {nicknameEditable ? (
                   <AutosizeInput
                     autoFocus
                     value={newNickname}
                     onChange={(e) => setNewNickname(e.target.value)}
                     inputClassName="changeNickname"
+                    style={{ maxWidth: "100%" }}
                     maxLength={15}
                     key={key}
                   ></AutosizeInput>
                 ) : (
-                  <span>{user?.nickname}</span>
+                  <span
+                    style={{
+                      display: "block",
+                      maxWidth: "100%",
+                      wordWrap: "break-word",
+                    }}
+                  >
+                    {user?.nickname}
+                  </span>
                 )}
               </div>
               <input
@@ -135,9 +145,11 @@ export default function Dashboard() {
                 alt="pencil"
                 style={{
                   filter: "invert(.6)",
-                  width: nicknameEditable ? "2.5vw" : "4vw",
+                  width: `calc(32px + ${nicknameEditable ? "2" : "3"}vw)`,
                   cursor: "pointer",
                   border: "none",
+                  marginTop: !nicknameEditable ? "-.5vw" : 0,
+                  marginLeft: "1vw",
                 }}
                 {...(nicknameEditable ? { name: "submit" } : {})}
               />
@@ -147,9 +159,9 @@ export default function Dashboard() {
                   alt="close"
                   style={{
                     filter: "invert(.4)",
-                    width: "2vw",
+                    width: "calc(24px + 2vw)",
                     cursor: "pointer",
-                    marginLeft: "1vw",
+                    marginLeft: "calc(8px + .5vw)",
                     border: "none",
                   }}
                   onClick={handleCloseEditNickname}
