@@ -75,6 +75,7 @@ export default function Dashboard() {
 
   const handleNicknameChange = async (e) => {
     e.preventDefault();
+    setError(null);
     if (!nicknameEditable || newNickname === user.nickname)
       return setNicknameEditable((nickEditable) => !nickEditable);
     const res = await api.post("/changeNickname", { newNickname });
@@ -174,6 +175,7 @@ export default function Dashboard() {
       <div className="loggedAs">
         <p>logged as {user.username}</p>
       </div>
+      {error && <p className="newNicknameError">{error}</p>}
       <button style={{ marginTop: ".5vw" }} onClick={logout}>
         Logout
       </button>
